@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Template with Dynamic Time</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        .clock-container {
+            display: flex;
+            align-items: center;
+        }
+
+        #current-time-digital {
+            font-size: 40px;
+            margin-right: 10px;
+        }
+
+        #current-time-analog {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Current Time:</h1>
+    <div class="clock-container">
+        <p id="current-time-digital"></p>
+        <img id="current-time-analog">
+    </div>
+    <p id="current-time-digital"></p>
+    <img id="current-time-analog">
+
+    <script>
+        function updateCurrentTime() {
+            $.get('/get_time/').done(function(data) {
+                time = data.digital;
+                time = time.replace(' ', '<br>');
+                $('#current-time-digital').html(time);
+                $('#current-time-analog').attr('src', 'data:image/png;base64,' + data.analog);
+            }).fail(function(error) {
+                console.log('Failed to get time', error);
+            });
+        }
+
+        // Update time every 5 seconds (5000 milliseconds)
+        setInterval(updateCurrentTime, 16);
+
+        // Initial update
+        updateCurrentTime();
+    </script>
+</body>
+</html>
